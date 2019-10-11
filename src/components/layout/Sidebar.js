@@ -9,13 +9,13 @@ import {
 export const Sidebar = () => (
     <div className='sidebar' data-testid='sidebar'>
         <ul className='sidebar__generic'>
-            <li>
+            <li data-testid='inbox' className='inbox'>
                 <FaInbox /> Inbox
             </li>
-            <li>
+            <li data-testid='today' className='today'>
                 <FaRegCalendar /> Today
             </li>
-            <li>
+            <li data-testid='next_7' className='next_7'>
                 <FaRegCalendarAlt /> Next 7 days
             </li>
         </ul>
