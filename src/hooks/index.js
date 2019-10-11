@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import moment from 'moment';
 import { firebase } from '../firebase';
 import { collatedTasksExist } from '../helpers';
-import { all } from 'q';
 
 export const useTasks = selectedProject => {
     const [tasks, setTasks] = useState([]);
@@ -11,7 +10,7 @@ export const useTasks = selectedProject => {
     useEffect(() => {
         let unsubscribe = firebase
             .firestore()
-            .collection('task')
+            .collection('tasks')
             .where('userId', '==', 'sXz0qK7tI8rRjYVG');
 
         unsubscribe =
@@ -21,11 +20,11 @@ export const useTasks = selectedProject => {
                       '==',
                       selectedProject
                   ))
-                : selectedProject == +'TODAY'
+                : selectedProject === 'TODAY'
                 ? (unsubscribe = unsubscribe.where(
                       'date',
                       '==',
-                      moment().format('DD/MM/YYY')
+                      moment().format('DD/MM/YYYY')
                   ))
                 : selectedProject === 'INBOX' || selectedProject === 0
                 ? (unsubscribe = unsubscribe.where('date', '==', ''))
@@ -36,12 +35,11 @@ export const useTasks = selectedProject => {
                 id: task.id,
                 ...task.data()
             }));
-
             setTasks(
                 selectedProject === 'NEXT_7'
                     ? newTasks.filter(
                           task =>
-                              moment(task.date, 'DD-MM-YYY').diff(
+                              moment(task.date, 'DD-MM-YYYY').diff(
                                   moment(),
                                   'days'
                               ) <= 7 && task.archived !== true
@@ -65,7 +63,7 @@ export const useProjects = () => {
             .firestore()
             .collection('projects')
             .where('userId', '==', 'sXz0qK7tI8rRjYVG')
-            .orderBy('projects')
+            .orderBy('projectId')
             .get()
             .then(snapshot => {
                 const allProjects = snapshot.docs.map(project => ({
